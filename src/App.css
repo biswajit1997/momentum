@@ -1,38 +1,67 @@
 .App {
-  text-align: center;
+  /* background-image: url(https://www.teahub.io/photos/full/32-324360_desktop-wallpapers-hd-3d-full-screen-nature-desktop.jpg); */
+  /* background-color: #ddd; */
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+input {
+  color: #fff;
+  min-width: 50%;
+  max-width: 90%;
+  margin: 0 auto;
+  padding-top: 15px;
+  display: inline-block !important;
+  border-bottom: 3px solid #fff;
+  line-height: normal;
+  overflow: hidden;
+  width: 95.9219px;
+  min-width: 566px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+input,
+textarea {
+  background: 0 0;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+input {
+  width: 50%;
+  margin: 0 auto;
+  padding-top: 15px;
+  display: block;
+  background: 0;
+  border: 0;
+  border-bottom: 3px solid #fff;
+  width: 20px;
+  min-width: 544px;
+}
+.title {
+  font-size: 337.5%;
+  color: #fff;
+}
+/* .head {
+  background-image: url(https://cdn0.iconfinder.com/data/icons/symbols-add-on-2-vol-1/48/v-33-512.png);
+} */
+.home {
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 100vh;
+  display: flex;
+  flex-flow: column;
 }
-
-.App-link {
-  color: #61dafb;
+.in {
+  font-size: 34px;
+  outline: none;
+  text-align: center;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.btn {
+  border: 1px solid #fff !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  padding: 7px 14px !important;
+}
+.btn:hover {
+  background-color: red !important;
+}
+.clock {
+  font-weight: bold;
+}
+.time {
+  font-size: 85px;
+  color: #fff;
 }
