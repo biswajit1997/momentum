@@ -1,5 +1,5 @@
 {
-  "name": "firebase",
+  "name": "momentum",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -10,6 +10,7 @@
     "boostrap": "^2.0.0",
     "bootstrap": "^4.5.3",
     "date-and-time": "^0.14.1",
+    "firebase": "^8.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-icons": "^3.11.0",

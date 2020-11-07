@@ -2,11 +2,17 @@ import React, { useState, useEffect } from "react";
 import "../App.css";
 import axios from "axios";
 import { WiDayCloudy } from "react-icons/wi";
+import { FcGoogle } from "react-icons/fc";
+import { FiSettings } from "react-icons/fi";
 import date from "date-and-time";
+import fire from "./fire";
+import { Popover, PopoverHeader, PopoverBody, Button } from "reactstrap";
 
 function Home() {
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const toggle = () => setPopoverOpen(!popoverOpen);
   const [dateTime, setDateTime] = useState("");
-  const [whetherData, setWhetherData] = useState([{ name: "Bhubaneswar" }]);
+  const [data, setdata] = useState([]);
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
   const [input, setInput] = useState("name");
@@ -15,7 +21,10 @@ function Home() {
   const [allData, setAllData] = useState([
     { name: "", email: "", password: "" },
   ]);
-  const api = { email: "biswajit@gmail.com", password: "qwer1234" };
+  const [todo, setTodo] = useState([]);
+  const [fetchData, setFetchData] = useState([]);
+  // const api = { email: "biswajit@gmail.com", password: "qwer1234" };
+  const [login, setLogin] = useState("");
   const Time = () => {
     var d = new Date(),
       h = (d.getHours() < 10 ? "0" : "") + d.getHours(),
@@ -27,7 +36,7 @@ function Home() {
     Time();
   });
 
-  // console.log(dateTime);
+  // console.log(fire);
 
   const handleShow = (e) => {
     setShow(true);
@@ -52,26 +61,91 @@ function Home() {
     setPassword(e.target.value);
     // console.log(password);
   };
+
   const subPass = () => {
-    // console.log(username);
-    // console.log(emails);
-    // console.log(password);
+    // fire.auth().signInWithEmailAndPassword(emails, password).catch();
+    //createUserWithEmailAndPassword
+    fire
+      .auth()
+      .signInWithEmailAndPassword(emails, password)
+      .then(function (result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        // var token = result.credential.accessToken;
+
+        console.log(result);
+        setLogin(result.operationType);
+        if (result.operationType == "signIn") {
+          setInput("dashboard");
+        } else {
+          setInput("name");
+        }
+
+        // The signed-in user info.
+        // var user = result.user;
+        // ...
+      })
+      .catch(function (error) {
+        // Handle Errors here.
+        console.log(error);
+        // var errorCode = error.code;
+        // var errorMessage = error.message;
+        // // The email of the user's account used.
+        // var email = error.email;
+        // // The firebase.auth.AuthCredential type that was used.
+        // var credential = error.credential;
+        // ...
+      });
+
     setAllData({
       ...allData,
       name: username,
       email: emails,
       password: password,
     });
-    if (api.email == emails && api.password == password) {
-      setInput("dashboard");
-      console.log(allData);
-    } else {
-      setInput("name");
-      console.log("password error");
-    }
   };
-  const whetherApi = "bfc873dcbfd97dce32a13927f3563bf9";
 
+  const googleLogin = () => {
+    var provider = new fire.firebase_.auth.GoogleAuthProvider();
+    fire
+      .auth()
+      .signInWithPopup(provider)
+      .then(function (result) {
+        setdata(result);
+        setLogin(result.operationType);
+        if (result.operationType == "signIn") {
+          setInput("dashboard");
+        } else {
+          setInput("name");
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const handleTodo = (e) => {
+    setTodo({ ...todo, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    fire
+      .database()
+      .ref("Todo")
+      .on("value", (snapshot) => {
+        let fetchdata = [];
+        snapshot.forEach((snap) => {
+          // snap.val() is the dictionary with all your keys/values from the 'students-list' path
+          fetchdata.push(snap.val());
+        });
+        setFetchData(fetchdata);
+      });
+  }, []);
+  console.log(fetchData);
+  const handleSubTodo = () => {
+    fire.database().ref("Todo").push(todo);
+  };
+
+  // const whetherApi = "bfc873dcbfd97dce32a13927f3563bf9";
   // useEffect(() => {
   //   const Api = () => {
   //     axios
@@ -89,7 +163,7 @@ function Home() {
   //   Api();
   // }, []);
   const Whetherfu = () => {
-    if (api.email == emails && api.password == password) {
+    if (login == "signIn") {
       return (
         <div
           className="text-right"
@@ -159,6 +233,14 @@ function Home() {
               </button>
             )}
           </div>
+          <div
+            className="mt-5 border p-2"
+            style={{ cursor: "pointer" }}
+            onClick={googleLogin}
+          >
+            <span style={{ color: "#fff" }}>SignIn with </span>
+            <FcGoogle style={{ fontSize: "30px", cursor: "pointer" }} />
+          </div>
         </div>
       );
     }
@@ -193,7 +275,7 @@ function Home() {
     }
 
     if (input == "dashboard") {
-      if (api.email == emails && api.password == password) {
+      if (login == "signIn") {
         return (
           <div class="home">
             <div
@@ -209,21 +291,55 @@ function Home() {
             <div className="text-center">
               <span className="title">Good afternoon,{username}</span>
             </div>
-            <div className="text-center">
+            {/* <div className="text-center">
               <span className="title">What is your main focus for today?</span>
-            </div>
+            </div> */}
             <div className="text-center">
               <input
                 type="text"
-                // onChange={handlePassword}
-                name="password"
+                onChange={handleTodo}
+                name="todo"
                 className="in"
                 required
               />
             </div>
-            {/* <div className="text-center mt-3">
-                {show == false ? [] : <button className="btn">Continue</button>}
-              </div> */}
+            <div className="text-center mt-3">
+              {show == false ? (
+                []
+              ) : (
+                <button onClick={handleSubTodo} className="btn">
+                  Continue
+                </button>
+              )}
+            </div>
+            <Popover
+              placement="bottom"
+              isOpen={popoverOpen}
+              target="Popover1"
+              toggle={toggle}
+            >
+              <PopoverBody>
+                <div>Name:{data.user.displayName}</div>
+                <div>Email:{data.user.email}</div>
+                <div
+                  onClick={handeShowTodo}
+                  className="text-center border"
+                  style={{ margin: "10px", cursor: "pointer" }}
+                >
+                  Todo
+                </div>
+              </PopoverBody>
+            </Popover>
+            <div style={{ marginRight: "auto", marginBottom: "0" }}>
+              <FiSettings
+                id="Popover1"
+                style={{
+                  fontSize: "35px",
+                  color: "#fff",
+                  cursor: "pointer",
+                }}
+              />
+            </div>
           </div>
         );
       }

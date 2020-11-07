@@ -65,3 +65,10 @@ input {
   font-size: 85px;
   color: #fff;
 }
+.img {
+  height: 32px;
+  width: 32px;
+  margin-right: 0;
+  border-radius: 50%;
+  vertical-align: top;
+}
