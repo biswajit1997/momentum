@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import axios from "axios";
+// import axios from "axios";
 import { WiDayCloudy } from "react-icons/wi";
 import { FcGoogle } from "react-icons/fc";
 import { FiSettings } from "react-icons/fi";
-import date from "date-and-time";
+// import date from "date-and-time";
 import fire from "./fire";
-import { Popover, PopoverHeader, PopoverBody, Button } from "reactstrap";
+import { Popover, PopoverBody } from "reactstrap";
 
 function Home() {
   const [popoverOpen, setPopoverOpen] = useState(false);
@@ -74,7 +74,7 @@ function Home() {
 
         console.log(result);
         setLogin(result.operationType);
-        if (result.operationType == "signIn") {
+        if (result.operationType === "signIn") {
           setInput("dashboard");
         } else {
           setInput("name");
@@ -112,7 +112,7 @@ function Home() {
       .then(function (result) {
         setdata(result);
         setLogin(result.operationType);
-        if (result.operationType == "signIn") {
+        if (result.operationType === "signIn") {
           setInput("dashboard");
         } else {
           setInput("name");
@@ -127,7 +127,10 @@ function Home() {
     setTodo({ ...todo, [e.target.name]: e.target.value });
   };
 
-  useEffect(() => {
+  const handleSubTodo = () => {
+    fire.database().ref("Todo").push(todo);
+  };
+  const handeShowTodo = () => {
     fire
       .database()
       .ref("Todo")
@@ -139,10 +142,15 @@ function Home() {
         });
         setFetchData(fetchdata);
       });
-  }, []);
-  console.log(fetchData);
-  const handleSubTodo = () => {
-    fire.database().ref("Todo").push(todo);
+  };
+  const fetch = () => {
+    return (
+      <div>
+        {fetchData.map((item) => {
+          return <span style={{ fontSize: "30px" }}>{item.todo}</span>;
+        })}
+      </div>
+    );
   };
 
   // const whetherApi = "bfc873dcbfd97dce32a13927f3563bf9";
@@ -163,7 +171,7 @@ function Home() {
   //   Api();
   // }, []);
   const Whetherfu = () => {
-    if (login == "signIn") {
+    if (login === "signIn") {
       return (
         <div
           className="text-right"
@@ -181,7 +189,7 @@ function Home() {
   };
 
   const Display = () => {
-    if (input == "name") {
+    if (input === "name") {
       return (
         <div class="home">
           <div className="text-center">
@@ -197,7 +205,7 @@ function Home() {
             />
           </div>
           <div className="text-center mt-3">
-            {show == false ? (
+            {show === false ? (
               []
             ) : (
               <button type="submit" onClick={handaleSubmit} className="btn">
@@ -208,7 +216,7 @@ function Home() {
         </div>
       );
     }
-    if (input == "email") {
+    if (input === "email") {
       return (
         <div class="home">
           <div className="text-center">
@@ -225,7 +233,7 @@ function Home() {
           </div>
 
           <div className="text-center mt-3">
-            {show == false ? (
+            {show === false ? (
               []
             ) : (
               <button onClick={subEmail} className="btn">
@@ -244,7 +252,7 @@ function Home() {
         </div>
       );
     }
-    if (input == "password") {
+    if (input === "password") {
       return (
         <div class="home">
           <div className="text-center">
@@ -262,7 +270,7 @@ function Home() {
           </div>
 
           <div className="text-center mt-3">
-            {show == false ? (
+            {show === false ? (
               []
             ) : (
               <button onClick={subPass} className="btn">
@@ -274,8 +282,8 @@ function Home() {
       );
     }
 
-    if (input == "dashboard") {
-      if (login == "signIn") {
+    if (input === "dashboard") {
+      if (login === "signIn") {
         return (
           <div class="home">
             <div
@@ -289,7 +297,7 @@ function Home() {
               <span class="time">{dateTime}</span>
             </div>
             <div className="text-center">
-              <span className="title">Good afternoon,{username}</span>
+              <span className="title">Good evening,{username}</span>
             </div>
             {/* <div className="text-center">
               <span className="title">What is your main focus for today?</span>
@@ -304,7 +312,7 @@ function Home() {
               />
             </div>
             <div className="text-center mt-3">
-              {show == false ? (
+              {show === false ? (
                 []
               ) : (
                 <button onClick={handleSubTodo} className="btn">
@@ -328,6 +336,7 @@ function Home() {
                 >
                   Todo
                 </div>
+                <div>{fetch()}</div>
               </PopoverBody>
             </Popover>
             <div style={{ marginRight: "auto", marginBottom: "0" }}>
