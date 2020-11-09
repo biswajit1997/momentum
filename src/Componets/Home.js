@@ -4,26 +4,34 @@ import "../App.css";
 import { WiDayCloudy } from "react-icons/wi";
 import { FcGoogle } from "react-icons/fc";
 import { FiSettings } from "react-icons/fi";
+import { RiCloseLine } from "react-icons/ri";
+
 // import date from "date-and-time";
 import fire from "./fire";
 import { Popover, PopoverBody } from "reactstrap";
+import ToggleButton from "react-toggle-button";
 
 function Home() {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
+  const [userDetails, setUserDetails] = useState([
+    {
+      name: "",
+      email: "",
+      password: "",
+      uid: "",
+      weather: "",
+      time: "",
+      focus: "",
+    },
+  ]);
   const [dateTime, setDateTime] = useState("");
   const [data, setdata] = useState([]);
   const [show, setShow] = useState(false);
-  const [username, setUsername] = useState("");
   const [input, setInput] = useState("name");
-  const [emails, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [allData, setAllData] = useState([
-    { name: "", email: "", password: "" },
-  ]);
   const [todo, setTodo] = useState([]);
   const [fetchData, setFetchData] = useState([]);
-  // const api = { email: "biswajit@gmail.com", password: "qwer1234" };
+
   const [login, setLogin] = useState("");
   const Time = () => {
     var d = new Date(),
@@ -32,76 +40,52 @@ function Home() {
     let value = h + ":" + m;
     setDateTime(value);
   };
+  const [weatherToggle, setWeatherToggle] = useState(true);
+  const [timeToggle, setTimeToggle] = useState(true);
+  const [focusToggle, setFocusToggle] = useState(true);
+  // console.log(focusToggle);
   useEffect(() => {
     Time();
   });
 
-  // console.log(fire);
-
   const handleShow = (e) => {
     setShow(true);
-    setUsername(e.target.value);
-    // console.log(e.target.value);
+    setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
   const handleEmail = (e) => {
     setShow(true);
-    setEmail(e.target.value);
-    // console.log(emails);
+    setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
   const handaleSubmit = (e) => {
+    e.target.value = "";
     setInput("email");
   };
   const subEmail = (e) => {
     setInput("password");
-    // console.log(emails);
-    // console.log(username);
   };
   const handlePassword = (e) => {
     setShow(true);
-    setPassword(e.target.value);
-    // console.log(password);
+    setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
 
   const subPass = () => {
-    // fire.auth().signInWithEmailAndPassword(emails, password).catch();
-    //createUserWithEmailAndPassword
     fire
       .auth()
-      .signInWithEmailAndPassword(emails, password)
+      .signInWithEmailAndPassword(userDetails.email, userDetails.password)
       .then(function (result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        // var token = result.credential.accessToken;
-
         console.log(result);
         setLogin(result.operationType);
+        setdata(result);
         if (result.operationType === "signIn") {
           setInput("dashboard");
         } else {
           setInput("name");
         }
-
-        // The signed-in user info.
-        // var user = result.user;
-        // ...
       })
       .catch(function (error) {
         // Handle Errors here.
         console.log(error);
-        // var errorCode = error.code;
-        // var errorMessage = error.message;
-        // // The email of the user's account used.
-        // var email = error.email;
-        // // The firebase.auth.AuthCredential type that was used.
-        // var credential = error.credential;
-        // ...
       });
-
-    setAllData({
-      ...allData,
-      name: username,
-      email: emails,
-      password: password,
-    });
   };
 
   const googleLogin = () => {
@@ -112,8 +96,14 @@ function Home() {
       .then(function (result) {
         setdata(result);
         setLogin(result.operationType);
+
         if (result.operationType === "signIn") {
           setInput("dashboard");
+          setUserDetails({
+            ...userDetails,
+            uid: result.user.uid,
+            email: result.user.email,
+          });
         } else {
           setInput("name");
         }
@@ -127,31 +117,44 @@ function Home() {
     setTodo({ ...todo, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    if (userDetails.uid) {
+      // console.log("userDetails");
+      fire.database().ref("userDetails").push(userDetails);
+      console.log(userDetails);
+    }
+  }, []);
+
   const handleSubTodo = () => {
-    fire.database().ref("Todo").push(todo);
+    setFocusToggle(false);
+    // fire.database().ref("Todo").push(todo);
   };
-  const handeShowTodo = () => {
-    fire
-      .database()
-      .ref("Todo")
-      .on("value", (snapshot) => {
-        let fetchdata = [];
-        snapshot.forEach((snap) => {
-          // snap.val() is the dictionary with all your keys/values from the 'students-list' path
-          fetchdata.push(snap.val());
+
+  useEffect(() => {
+    const userDetailsShow = () => {
+      fire
+        .database()
+        .ref("userDetails")
+        .on("value", (snapshot) => {
+          let fetchdata = [];
+          snapshot.forEach((snap) => {
+            fetchdata.push(snap.val());
+          });
+          setFetchData(fetchdata);
         });
-        setFetchData(fetchdata);
-      });
-  };
-  const fetch = () => {
-    return (
-      <div>
-        {fetchData.map((item) => {
-          return <span style={{ fontSize: "30px" }}>{item.todo}</span>;
-        })}
-      </div>
-    );
-  };
+    };
+    userDetailsShow();
+  }, []);
+
+  // const fetch = () => {
+  //   return (
+  //     <div>
+  //       {fetchData.map((item) => {
+  //         return <span style={{ fontSize: "30px" }}>{item.todo}</span>;
+  //       })}
+  //     </div>
+  //   );
+  // };
 
   // const whetherApi = "bfc873dcbfd97dce32a13927f3563bf9";
   // useEffect(() => {
@@ -187,7 +190,38 @@ function Home() {
       );
     }
   };
+  const focus = () => {
+    return (
+      <>
+        <div className="text-center">
+          <span className="focus">What is your main focus for today?</span>
+        </div>
 
+        <div className="text-center">
+          <input
+            type="text"
+            onChange={handleTodo}
+            name="todo"
+            className="in"
+            required
+          />
+        </div>
+        <div className="text-center mt-3">
+          {show === false ? (
+            []
+          ) : (
+            <button onClick={handleSubTodo} className="btn">
+              Continue
+            </button>
+          )}
+        </div>
+      </>
+    );
+  };
+  const onClose = () => {
+    setTodo("");
+    setFocusToggle(true);
+  };
   const Display = () => {
     if (input === "name") {
       return (
@@ -201,6 +235,7 @@ function Home() {
               onChange={handleShow}
               className="in"
               name="name"
+              value={userDetails.c}
               required
             />
           </div>
@@ -208,7 +243,11 @@ function Home() {
             {show === false ? (
               []
             ) : (
-              <button type="submit" onClick={handaleSubmit} className="btn">
+              <button
+                type="submit"
+                onClick={(e) => handaleSubmit(e)}
+                className="btn"
+              >
                 Continue
               </button>
             )}
@@ -220,8 +259,9 @@ function Home() {
       return (
         <div class="home">
           <div className="text-center">
-            <span className="title">What's your email,{username}?</span>
+            <span className="title">What's your email,{userDetails.name}?</span>
           </div>
+
           <div className="text-center">
             <input
               type="email"
@@ -241,6 +281,7 @@ function Home() {
               </button>
             )}
           </div>
+
           <div
             className="mt-5 border p-2"
             style={{ cursor: "pointer" }}
@@ -290,36 +331,31 @@ function Home() {
               class="text-right"
               style={{ marginLeft: "auto", marginBottom: "0" }}
             >
-              {Whetherfu()}
+              {weatherToggle === true ? Whetherfu() : []}
             </div>
 
             <div class="clock">
-              <span class="time">{dateTime}</span>
+              <span class="time"> {timeToggle === true ? dateTime : []}</span>
             </div>
+
             <div className="text-center">
-              <span className="title">Good evening,{username}</span>
+              <span className="title">Good evening,{userDetails.name}</span>
             </div>
-            {/* <div className="text-center">
-              <span className="title">What is your main focus for today?</span>
-            </div> */}
-            <div className="text-center">
-              <input
-                type="text"
-                onChange={handleTodo}
-                name="todo"
-                className="in"
-                required
-              />
-            </div>
-            <div className="text-center mt-3">
-              {show === false ? (
-                []
-              ) : (
-                <button onClick={handleSubTodo} className="btn">
-                  Continue
-                </button>
-              )}
-            </div>
+            {focusToggle == true ? focus() : []}
+            {focusToggle == false ? (
+              <div className="text-center mt-3">
+                <span style={{ color: "#fff", marginRight: "7px" }}>
+                  {todo.todo}
+                </span>
+                <RiCloseLine
+                  onClick={onClose}
+                  style={{ color: "red", cursor: "pointer" }}
+                />
+              </div>
+            ) : (
+              []
+            )}
+
             <Popover
               placement="bottom"
               isOpen={popoverOpen}
@@ -329,14 +365,59 @@ function Home() {
               <PopoverBody>
                 <div>Name:{data.user.displayName}</div>
                 <div>Email:{data.user.email}</div>
-                <div
+
+                {/* <div
                   onClick={handeShowTodo}
                   className="text-center border"
                   style={{ margin: "10px", cursor: "pointer" }}
                 >
                   Todo
+                </div> */}
+                {/* <div>{fetch()}</div> */}
+
+                <div className="row mt-3">
+                  <div className="col-6">Weather : </div>
+                  <div className="col-6">
+                    <ToggleButton
+                      value={weatherToggle || false}
+                      onToggle={(value) => {
+                        setWeatherToggle(!weatherToggle);
+                        setUserDetails({
+                          ...userDetails,
+                          weather: weatherToggle,
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
-                <div>{fetch()}</div>
+
+                <div className="row mt-3">
+                  <div className="col-6">Time : </div>
+                  <div className="col-6">
+                    <ToggleButton
+                      value={timeToggle || false}
+                      onToggle={(value) => {
+                        setTimeToggle(!timeToggle);
+                        setUserDetails({ ...userDetails, time: timeToggle });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="row mt-3">
+                  <div className="col-6">Focus : </div>
+                  <div className="col-6">
+                    <ToggleButton
+                      value={focusToggle || false}
+                      onToggle={(value) => {
+                        setFocusToggle(!focusToggle);
+                        setUserDetails({
+                          ...userDetails,
+                          focus: focusToggle,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
               </PopoverBody>
             </Popover>
             <div style={{ marginRight: "auto", marginBottom: "0" }}>
