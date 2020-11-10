@@ -7,7 +7,7 @@ import { RiCloseLine } from "react-icons/ri";
 import axios from "axios";
 // import date from "date-and-time";
 import fire from "./fire";
-import { Popover, PopoverBody, Input } from "reactstrap";
+import { Popover, PopoverBody } from "reactstrap";
 import ToggleButton from "react-toggle-button";
 
 function Home() {
@@ -43,7 +43,7 @@ function Home() {
   const [timeToggle, setTimeToggle] = useState(true);
   const [focusToggle, setFocusToggle] = useState(true);
   const [weatherData, setWeatherData] = useState("");
-  console.log(weatherData);
+  // console.log(weatherData);
   useEffect(() => {
     Time();
   });
@@ -121,7 +121,7 @@ function Home() {
     if (userDetails.uid) {
       // console.log("userDetails");
       fire.database().ref("userDetails").push(userDetails);
-      console.log(userDetails);
+      // console.log(userDetails);
     }
   }, []);
 
@@ -146,15 +146,15 @@ function Home() {
     userDetailsShow();
   }, []);
 
-  const fetch = () => {
-    return (
-      <div>
-        {fetchData.map((item) => {
-          return <span style={{ fontSize: "30px" }}>{item.todo}</span>;
-        })}
-      </div>
-    );
-  };
+  // const fetch = () => {
+  //   return (
+  //     <div>
+  //       {fetchData.map((item) => {
+  //         return <span style={{ fontSize: "30px" }}>{item.todo}</span>;
+  //       })}
+  //     </div>
+  //   );
+  // };
 
   // const whetherApi = "bfc873dcbfd97dce32a13927f3563bf9";
   useEffect(() => {
@@ -165,7 +165,7 @@ function Home() {
         )
         .then(function (response) {
           setWeatherData(response.data);
-          console.log(response.data);
+          // console.log(response.data);
         })
         .catch(function (error) {
           console.error(error.message);
@@ -355,8 +355,8 @@ function Home() {
             <div className="text-center">
               <span className="title">Good evening,{userDetails.name}</span>
             </div>
-            {focusToggle == true ? focus() : []}
-            {focusToggle == false ? (
+            {focusToggle === true ? focus() : []}
+            {focusToggle === false ? (
               <div className="text-center mt-3">
                 <span style={{ color: "#fff", marginRight: "7px" }}>
                   {todo.todo}
@@ -395,7 +395,7 @@ function Home() {
                       </div>
                     </div>
                     <div className="col-6">
-                      {leftsidebar == "general" ? (
+                      {leftsidebar === "general" ? (
                         <div>
                           <div>
                             <h4>General</h4>
@@ -453,7 +453,7 @@ function Home() {
                       ) : (
                         []
                       )}
-                      {leftsidebar == "question" ? (
+                      {leftsidebar === "question" ? (
                         <div>
                           <div>
                             <h5>Question </h5>
