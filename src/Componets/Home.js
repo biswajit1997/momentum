@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-// import axios from "axios";
 import { WiDayCloudy } from "react-icons/wi";
 import { FcGoogle } from "react-icons/fc";
 import { FiSettings } from "react-icons/fi";
 import { RiCloseLine } from "react-icons/ri";
-
+import axios from "axios";
 // import date from "date-and-time";
 import fire from "./fire";
-import { Popover, PopoverBody } from "reactstrap";
+import { Popover, PopoverBody, Input } from "reactstrap";
 import ToggleButton from "react-toggle-button";
 
 function Home() {
@@ -43,7 +42,8 @@ function Home() {
   const [weatherToggle, setWeatherToggle] = useState(true);
   const [timeToggle, setTimeToggle] = useState(true);
   const [focusToggle, setFocusToggle] = useState(true);
-  // console.log(focusToggle);
+  const [weatherData, setWeatherData] = useState("");
+  console.log(weatherData);
   useEffect(() => {
     Time();
   });
@@ -146,33 +146,34 @@ function Home() {
     userDetailsShow();
   }, []);
 
-  // const fetch = () => {
-  //   return (
-  //     <div>
-  //       {fetchData.map((item) => {
-  //         return <span style={{ fontSize: "30px" }}>{item.todo}</span>;
-  //       })}
-  //     </div>
-  //   );
-  // };
+  const fetch = () => {
+    return (
+      <div>
+        {fetchData.map((item) => {
+          return <span style={{ fontSize: "30px" }}>{item.todo}</span>;
+        })}
+      </div>
+    );
+  };
 
   // const whetherApi = "bfc873dcbfd97dce32a13927f3563bf9";
-  // useEffect(() => {
-  //   const Api = () => {
-  //     axios
-  //       .get(
-  //         "http://api.openweathermap.org/data/2.5/weather?q=bhubaneswar&appid=bfc873dcbfd97dce32a13927f3563bf9"
-  //       )
-  //       .then(function (response) {
-  //         setWhetherData(response.data);
-  //         console.log(response.data);
-  //       })
-  //       .catch(function (error) {
-  //         console.error(error.message);
-  //       });
-  //   };
-  //   Api();
-  // }, []);
+  useEffect(() => {
+    const Api = () => {
+      axios
+        .get(
+          "http://api.openweathermap.org/data/2.5/weather?q=bhubaneswar&appid=bfc873dcbfd97dce32a13927f3563bf9"
+        )
+        .then(function (response) {
+          setWeatherData(response.data);
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.error(error.message);
+        });
+    };
+    Api();
+  }, []);
+
   const Whetherfu = () => {
     if (login === "signIn") {
       return (
@@ -182,10 +183,12 @@ function Home() {
         >
           <div>
             <h3>
-              <WiDayCloudy style={{ fontSize: "44px" }} /> 31
+              <WiDayCloudy style={{ fontSize: "44px" }} />
+              {Math.floor(weatherData.main.temp - 273.15)}
+              <sup>&deg;c</sup>
             </h3>
           </div>
-          <span>Bhubaneswar</span>
+          <span>{weatherData.name}</span>
         </div>
       );
     }
@@ -222,6 +225,16 @@ function Home() {
     setTodo("");
     setFocusToggle(true);
   };
+  const handlelogout = () => {
+    setInput("name");
+  };
+  const [leftsidebar, setLeftSideBar] = useState("general");
+  const handleGeneral = () => {
+    setLeftSideBar("general");
+  };
+  const handleQuestion = () => {
+    setLeftSideBar("question");
+  };
   const Display = () => {
     if (input === "name") {
       return (
@@ -229,13 +242,13 @@ function Home() {
           <div className="text-center">
             <span className="title">Hello, what's your name?</span>
           </div>
+
           <div className="text-center">
             <input
               type="text"
               onChange={handleShow}
               className="in"
               name="name"
-              value={userDetails.c}
               required
             />
           </div>
@@ -283,6 +296,7 @@ function Home() {
           </div>
 
           <div
+            type="submit"
             className="mt-5 border p-2"
             style={{ cursor: "pointer" }}
             onClick={googleLogin}
@@ -327,19 +341,19 @@ function Home() {
       if (login === "signIn") {
         return (
           <div class="home">
-            <div
+            {/* <div
               class="text-right"
               style={{ marginLeft: "auto", marginBottom: "0" }}
             >
               {weatherToggle === true ? Whetherfu() : []}
-            </div>
+            </div> */}
 
             <div class="clock">
               <span class="time"> {timeToggle === true ? dateTime : []}</span>
             </div>
 
             <div className="text-center">
-              <span className="title">Good evening,{userDetails.name}</span>
+              <span className="title">Good afternoon,{userDetails.name}</span>
             </div>
             {focusToggle == true ? focus() : []}
             {focusToggle == false ? (
@@ -363,7 +377,97 @@ function Home() {
               toggle={toggle}
             >
               <PopoverBody>
-                <div>Name:{data.user.displayName}</div>
+                <div className="container">
+                  <div className="row">
+                    <div
+                      className="col-4"
+                      style={{ borderRight: "1px solid #000" }}
+                    >
+                      <div>
+                        <h5 onClick={handleGeneral} className="bar">
+                          General
+                        </h5>
+                      </div>
+                      <div>
+                        <h5 onClick={handleQuestion} className="bar">
+                          Question
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      {leftsidebar == "general" ? (
+                        <div>
+                          <div>
+                            <h4>General</h4>
+                          </div>
+                          <div>
+                            <span> Customize your dashboard</span>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-8">Weather : </div>
+                            <div className="col-4 ">
+                              <ToggleButton
+                                value={weatherToggle || false}
+                                onToggle={(value) => {
+                                  setWeatherToggle(!weatherToggle);
+                                  setUserDetails({
+                                    ...userDetails,
+                                    weather: weatherToggle,
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="row mt-3">
+                            <div className="col-8">Time : </div>
+                            <div className="col-4">
+                              <ToggleButton
+                                value={timeToggle || false}
+                                onToggle={(value) => {
+                                  setTimeToggle(!timeToggle);
+                                  setUserDetails({
+                                    ...userDetails,
+                                    time: timeToggle,
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col-8">Question : </div>
+                            <div className="col-4">
+                              <ToggleButton
+                                value={focusToggle || false}
+                                onToggle={(value) => {
+                                  setFocusToggle(!focusToggle);
+                                  setUserDetails({
+                                    ...userDetails,
+                                    focus: focusToggle,
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        []
+                      )}
+                      {leftsidebar == "question" ? (
+                        <div>
+                          <div>
+                            <h5>Question </h5>
+                          </div>
+                          <div>* {todo.todo}</div>
+                        </div>
+                      ) : (
+                        []
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {/* <div>Name:{data.user.displayName}</div> */}
+                <div>Name:{userDetails.name}</div>
                 <div>Email:{data.user.email}</div>
 
                 {/* <div
@@ -375,61 +479,29 @@ function Home() {
                 </div> */}
                 {/* <div>{fetch()}</div> */}
 
-                <div className="row mt-3">
-                  <div className="col-6">Weather : </div>
-                  <div className="col-6">
-                    <ToggleButton
-                      value={weatherToggle || false}
-                      onToggle={(value) => {
-                        setWeatherToggle(!weatherToggle);
-                        setUserDetails({
-                          ...userDetails,
-                          weather: weatherToggle,
-                        });
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="row mt-3">
-                  <div className="col-6">Time : </div>
-                  <div className="col-6">
-                    <ToggleButton
-                      value={timeToggle || false}
-                      onToggle={(value) => {
-                        setTimeToggle(!timeToggle);
-                        setUserDetails({ ...userDetails, time: timeToggle });
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row mt-3">
-                  <div className="col-6">Focus : </div>
-                  <div className="col-6">
-                    <ToggleButton
-                      value={focusToggle || false}
-                      onToggle={(value) => {
-                        setFocusToggle(!focusToggle);
-                        setUserDetails({
-                          ...userDetails,
-                          focus: focusToggle,
-                        });
-                      }}
-                    />
+                <div className="container">
+                  <div
+                    className="text-center border mt-3 logout"
+                    onClick={handlelogout}
+                  >
+                    <span>Logout</span>
                   </div>
                 </div>
               </PopoverBody>
             </Popover>
-            <div style={{ marginRight: "auto", marginBottom: "0" }}>
+            {/* <div style={{ marginRight: "auto", marginBottom: "0" }}>
               <FiSettings
                 id="Popover1"
                 style={{
-                  fontSize: "35px",
+                  fontSize: "25px",
                   color: "#fff",
                   cursor: "pointer",
                 }}
               />
             </div>
+            <div className="text-center" style={{ color: "#fff" }}>
+              "When you're curious,you find lots of interesting thing to do."
+            </div> */}
           </div>
         );
       }
@@ -437,11 +509,42 @@ function Home() {
   };
 
   return (
-    <div>
-      <div className="container">
-        {/* <div>{Whetherfu()}</div> */}
+    <div className="main">
+      <div className="col-12 hd">
+        {login === "signIn" ? (
+          <div
+            class="text-right"
+            style={{ marginLeft: "auto", marginBottom: "0" }}
+          >
+            {weatherToggle === true ? Whetherfu() : []}
+          </div>
+        ) : (
+          []
+        )}
+      </div>
 
-        {Display()}
+      <div className="col-12  ">{Display()}</div>
+
+      <div className="col-12 footer">
+        {login === "signIn" ? (
+          <>
+            <div style={{ marginRight: "auto", marginBottom: "0" }}>
+              <FiSettings
+                id="Popover1"
+                style={{
+                  fontSize: "25px",
+                  color: "#fff",
+                  cursor: "pointer",
+                }}
+              />
+            </div>
+            <div className="text-center" style={{ color: "#fff" }}>
+              "When you're curious,you find lots of interesting thing to do."
+            </div>
+          </>
+        ) : (
+          []
+        )}
       </div>
     </div>
   );

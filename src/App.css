@@ -1,7 +1,3 @@
-.App {
-  /* background-image: url(https://www.teahub.io/photos/full/32-324360_desktop-wallpapers-hd-3d-full-screen-nature-desktop.jpg); */
-  /* background-color: #ddd; */
-}
 input {
   color: #fff;
   min-width: 50%;
@@ -44,7 +40,7 @@ input {
 .home {
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  /* height: 100vh; */
   display: flex;
   flex-flow: column;
 }
@@ -68,11 +64,39 @@ input {
 .time {
   font-size: 85px;
   color: #fff;
+  text-shadow: 2px 2px #807272;
 }
+
 .img {
   height: 32px;
   width: 32px;
   margin-right: 0;
   border-radius: 50%;
   vertical-align: top;
+}
+.logout {
+  cursor: pointer;
+}
+.popover {
+  min-width: 35%;
+}
+.bar {
+  cursor: pointer;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.footer {
+  margin-top: auto;
+}
+.hd {
+  margin-bottom: auto;
+  position: fixed;
+}
+.mid {
+  position: fixed;
 }
