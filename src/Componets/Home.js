@@ -353,7 +353,7 @@ function Home() {
             </div>
 
             <div className="text-center">
-              <span className="title">Good afternoon,{userDetails.name}</span>
+              <span className="title">Good evening,{userDetails.name}</span>
             </div>
             {focusToggle == true ? focus() : []}
             {focusToggle == false ? (
@@ -523,7 +523,7 @@ function Home() {
         )}
       </div>
 
-      <div className="col-12  ">{Display()}</div>
+      <div className="col-12 mid ">{Display()}</div>
 
       <div className="col-12 footer">
         {login === "signIn" ? (
