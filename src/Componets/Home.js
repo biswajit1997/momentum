@@ -161,7 +161,6 @@ function Home() {
   //   );
   // };
 
-  // const whetherApi = "bfc873dcbfd97dce32a13927f3563bf9";
   useEffect(() => {
     const Api = () => {
       axios
@@ -383,8 +382,12 @@ function Home() {
 
             <div className="text-center">
               <span className="title">
-                Good {dateTime > "16:00" ? "evening" : "afternoon"},
-                {userDetails.name}
+                Good{" "}
+                {
+                  (dateTime > "16:00" ? "evening" : "afternoon",
+                  dateTime > "20:00" ? "night" : "evening")
+                }
+                ,{userDetails.name}
               </span>
             </div>
             {focusToggle === true ? focus() : []}
