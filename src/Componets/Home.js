@@ -34,15 +34,18 @@ function Home() {
   const [input, setInput] = useState("name");
   const [todo, setTodo] = useState("");
   const [fetchData, setFetchData] = useState([]);
-
+  const [checkTime,setCheckTime]=useState("")
   const [login, setLogin] = useState("");
   const Time = () => {
     var d = new Date(),
       h = (d.getHours() < 10 ? "0" : "") + d.getHours(),
       m = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
+      setCheckTime(h);
     let value = h + ":" + m;
     setDateTime(value);
+    
   };
+  // console.log(checkTime)
   const [weatherToggle, setWeatherToggle] = useState(true);
   const [timeToggle, setTimeToggle] = useState(true);
   const [focusToggle, setFocusToggle] = useState(true);
@@ -195,7 +198,7 @@ function Home() {
                 target="TooltipExample"
                 toggle={togglee}
               >
-                {weatherData.weather[0].description}
+                {/* {weatherData.weather[0].description} */}
               </Tooltip>
               {/* <BiCloudRain style={{ fontSize: "44px" }} /> */}
               <img
@@ -386,10 +389,7 @@ function Home() {
             <div className="text-center">
               <span className="title">
                 Good{" "}
-                {
-                  (dateTime > "16:00" ? "evening" : "afternoon",
-                  dateTime > "20:00" ? "night" : "evening")
-                }
+                { checkTime < 12 ? "Morning" : checkTime < 15 ? "Afternoon" : "Evening"}
                 ,{userDetails.name}
               </span>
             </div>
