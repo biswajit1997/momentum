@@ -63,9 +63,11 @@ function Home() {
   const handaleSubmit = (e) => {
     e.target.value = "";
     setInput("email");
+    
   };
   const subEmail = (e) => {
     setInput("password");
+    console.log(userDetails)
   };
   const handlePassword = (e) => {
     setShow(true);
@@ -177,7 +179,7 @@ function Home() {
     };
     Api();
   }, []);
-  console.log(weatherData);
+  // console.log(weatherData);
   const Whetherfu = () => {
     if (login === "signIn") {
       return (
@@ -270,7 +272,7 @@ function Home() {
           <div className="text-center">
             <span className="title">Hello, what's your name?</span>
           </div>
-
+          <form onSubmit={(e) => handaleSubmit(e)}>
           <div className="text-center">
             <input
               type="text"
@@ -280,6 +282,7 @@ function Home() {
               required
             />
           </div>
+          </form>
           <div className="text-center mt-3">
             {show === false ? (
               []
@@ -302,7 +305,7 @@ function Home() {
           <div className="text-center">
             <span className="title">What's your email,{userDetails.name}?</span>
           </div>
-
+        
           <div className="text-center">
             <input
               type="email"
@@ -312,7 +315,7 @@ function Home() {
               required
             />
           </div>
-
+       
           <div className="text-center mt-3">
             {show === false ? (
               []
@@ -341,7 +344,7 @@ function Home() {
           <div className="text-center">
             <span className="title">Please Choose a password.</span>
           </div>
-
+          <form onSubmit={subPass}>
           <div className="text-center">
             <input
               type="password"
@@ -351,7 +354,7 @@ function Home() {
               required
             />
           </div>
-
+          </form>
           <div className="text-center mt-3">
             {show === false ? (
               []
