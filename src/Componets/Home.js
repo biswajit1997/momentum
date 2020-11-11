@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import { WiDayCloudy } from "react-icons/wi";
+import { BiCloudRain } from "react-icons/bi";
 import { FcGoogle } from "react-icons/fc";
 import { FiSettings } from "react-icons/fi";
 import { RiCloseLine } from "react-icons/ri";
@@ -9,8 +9,12 @@ import axios from "axios";
 import fire from "./fire";
 import { Popover, PopoverBody } from "reactstrap";
 import ToggleButton from "react-toggle-button";
+import { Tooltip } from "reactstrap";
 
 function Home() {
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const togglee = () => setTooltipOpen(!tooltipOpen);
+
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
   const [userDetails, setUserDetails] = useState([
@@ -28,7 +32,7 @@ function Home() {
   const [data, setdata] = useState([]);
   const [show, setShow] = useState(false);
   const [input, setInput] = useState("name");
-  const [todo, setTodo] = useState([]);
+  const [todo, setTodo] = useState("");
   const [fetchData, setFetchData] = useState([]);
 
   const [login, setLogin] = useState("");
@@ -127,6 +131,7 @@ function Home() {
 
   const handleSubTodo = () => {
     setFocusToggle(false);
+    console.log("todo submit");
     // fire.database().ref("Todo").push(todo);
   };
 
@@ -173,17 +178,34 @@ function Home() {
     };
     Api();
   }, []);
-
+  console.log(weatherData);
   const Whetherfu = () => {
     if (login === "signIn") {
       return (
         <div
-          className="text-right"
-          style={{ color: "#fff", marginBottom: "111px" }}
+        // className="text-right"
+        // style={{ color: "#fff", marginBottom: "111px" }}
         >
           <div>
             <h3>
-              <WiDayCloudy style={{ fontSize: "44px" }} />
+              <Tooltip
+                placement="right"
+                isOpen={tooltipOpen}
+                target="TooltipExample"
+                toggle={togglee}
+              >
+                {weatherData.weather[0].description}
+              </Tooltip>
+              {/* <BiCloudRain style={{ fontSize: "44px" }} /> */}
+              <img
+                id="TooltipExample"
+                src={
+                  "http://openweathermap.org/img/w/" +
+                  weatherData.weather[0].icon +
+                  ".png"
+                }
+                alert=""
+              />
               {Math.floor(weatherData.main.temp - 273.15)}
               <sup>&deg;c</sup>
             </h3>
@@ -193,34 +215,40 @@ function Home() {
       );
     }
   };
+  // let valTodo = todo.todo;
+  // console.log(valTodo.length);
+
   const focus = () => {
     return (
       <>
         <div className="text-center">
           <span className="focus">What is your main focus for today?</span>
         </div>
+        <form onSubmit={handleSubTodo}>
+          <div className="text-center">
+            <input
+              type="text"
+              onChange={handleTodo}
+              name="todo"
+              className="in"
+              required
+            />
+          </div>
+        </form>
 
-        <div className="text-center">
-          <input
-            type="text"
-            onChange={handleTodo}
-            name="todo"
-            className="in"
-            required
-          />
-        </div>
-        <div className="text-center mt-3">
-          {show === false ? (
-            []
-          ) : (
+        {/* <div className="text-center mt-3">
+          {todo.todo == " " ? (
             <button onClick={handleSubTodo} className="btn">
               Continue
             </button>
+          ) : (
+            []
           )}
-        </div>
+        </div> */}
       </>
     );
   };
+
   const onClose = () => {
     setTodo("");
     setFocusToggle(true);
@@ -235,6 +263,7 @@ function Home() {
   const handleQuestion = () => {
     setLeftSideBar("question");
   };
+
   const Display = () => {
     if (input === "name") {
       return (
@@ -353,7 +382,10 @@ function Home() {
             </div>
 
             <div className="text-center">
-              <span className="title">Good evening,{userDetails.name}</span>
+              <span className="title">
+                Good {dateTime > "16:00" ? "evening" : "afternoon"},
+                {userDetails.name}
+              </span>
             </div>
             {focusToggle === true ? focus() : []}
             {focusToggle === false ? (
@@ -509,39 +541,53 @@ function Home() {
   };
 
   return (
-    <div className="main">
-      <div className="col-12 hd">
-        {login === "signIn" ? (
-          <div
-            class="text-right"
-            style={{ marginLeft: "auto", marginBottom: "0" }}
-          >
-            {weatherToggle === true ? Whetherfu() : []}
+    <div className=" main">
+      <div className="col-sm-12 col-xm-12 hd">
+        {input === "dashboard" ? (
+          <div>
+            {login === "signIn" ? (
+              <div
+                class="weather"
+                // style={{ marginLeft: "auto", marginBottom: "0" }}
+              >
+                {weatherToggle === true ? Whetherfu() : []}
+              </div>
+            ) : (
+              []
+            )}
           </div>
         ) : (
           []
         )}
       </div>
 
-      <div className="col-12 mid ">{Display()}</div>
+      <div className="col-sm-12 col-xm-12 mid ">{Display()}</div>
 
-      <div className="col-12 footer">
-        {login === "signIn" ? (
-          <>
-            <div style={{ marginRight: "auto", marginBottom: "0" }}>
-              <FiSettings
-                id="Popover1"
-                style={{
-                  fontSize: "25px",
-                  color: "#fff",
-                  cursor: "pointer",
-                }}
-              />
-            </div>
-            <div className="text-center" style={{ color: "#fff" }}>
-              "When you're curious,you find lots of interesting thing to do."
-            </div>
-          </>
+      <div className="col-sm-12 col-xm-12 footer">
+        {input === "dashboard" ? (
+          <div>
+            {login === "signIn" ? (
+              <>
+                <div style={{ marginRight: "auto", marginBottom: "0" }}>
+                  <FiSettings
+                    id="Popover1"
+                    style={{
+                      fontSize: "25px",
+                      color: "#fff",
+                      cursor: "pointer",
+                    }}
+                  />
+                </div>
+                <div className="text-center" style={{ color: "#fff" }}>
+                  "So many of our dreams at first seem impossible. Then they
+                  seem improbable. And then, when we summon the will, they soon
+                  become inevitable."
+                </div>
+              </>
+            ) : (
+              []
+            )}
+          </div>
         ) : (
           []
         )}
