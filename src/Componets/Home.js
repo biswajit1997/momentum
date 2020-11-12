@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
-import "../App.css";
-import { FcGoogle } from "react-icons/fc";
-import { FiSettings } from "react-icons/fi";
-import { RiCloseLine } from "react-icons/ri";
-import axios from "axios";
-import fire from "./fire";
 import { Popover, PopoverBody } from "reactstrap";
 import ToggleButton from "react-toggle-button";
+import { RiCloseLine } from "react-icons/ri";
+import { FiSettings } from "react-icons/fi";
+import { FcGoogle } from "react-icons/fc";
 import { Tooltip } from "reactstrap";
+import axios from "axios";
+import fire from "./fire";
+import "../App.css";
 
 function Home() {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const togglee = () => setTooltipOpen(!tooltipOpen);
-
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
   const [userDetails, setUserDetails] = useState([
@@ -124,7 +123,6 @@ function Home() {
 
   useEffect(() => {
     if (userDetails.uid) {
-      // console.log("userDetails");
       fire.database().ref("userDetails").push(userDetails);
       // console.log(userDetails);
     }

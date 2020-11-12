@@ -94,7 +94,7 @@ input {
 }
 .hd {
   margin-bottom: auto;
-  position: fixed;
+  /* position: fixed; */
 }
 .mid {
   position: fixed;
