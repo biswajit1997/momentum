@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import { BiCloudRain } from "react-icons/bi";
 import { FcGoogle } from "react-icons/fc";
 import { FiSettings } from "react-icons/fi";
 import { RiCloseLine } from "react-icons/ri";
 import axios from "axios";
-// import date from "date-and-time";
 import fire from "./fire";
 import { Popover, PopoverBody } from "reactstrap";
 import ToggleButton from "react-toggle-button";
@@ -34,16 +32,15 @@ function Home() {
   const [input, setInput] = useState("name");
   const [todo, setTodo] = useState("");
   const [fetchData, setFetchData] = useState([]);
-  const [checkTime,setCheckTime]=useState("")
+  const [checkTime, setCheckTime] = useState("");
   const [login, setLogin] = useState("");
   const Time = () => {
     var d = new Date(),
       h = (d.getHours() < 10 ? "0" : "") + d.getHours(),
       m = (d.getMinutes() < 10 ? "0" : "") + d.getMinutes();
-      setCheckTime(h);
+    setCheckTime(h);
     let value = h + ":" + m;
     setDateTime(value);
-    
   };
   // console.log(checkTime)
   const [weatherToggle, setWeatherToggle] = useState(true);
@@ -66,11 +63,10 @@ function Home() {
   const handaleSubmit = (e) => {
     e.target.value = "";
     setInput("email");
-    
   };
   const subEmail = (e) => {
     setInput("password");
-    console.log(userDetails)
+    console.log(userDetails);
   };
   const handlePassword = (e) => {
     setShow(true);
@@ -156,16 +152,6 @@ function Home() {
     userDetailsShow();
   }, []);
 
-  // const fetch = () => {
-  //   return (
-  //     <div>
-  //       {fetchData.map((item) => {
-  //         return <span style={{ fontSize: "30px" }}>{item.todo}</span>;
-  //       })}
-  //     </div>
-  //   );
-  // };
-
   useEffect(() => {
     const Api = () => {
       axios
@@ -182,14 +168,11 @@ function Home() {
     };
     Api();
   }, []);
-  // console.log(weatherData);
+
   const Whetherfu = () => {
     if (login === "signIn") {
       return (
-        <div
-        // className="text-right"
-        // style={{ color: "#fff", marginBottom: "111px" }}
-        >
+        <div>
           <div>
             <h3>
               <Tooltip
@@ -198,9 +181,9 @@ function Home() {
                 target="TooltipExample"
                 toggle={togglee}
               >
-                {/* {weatherData.weather[0].description} */}
+                {weatherData.weather[0].description}
               </Tooltip>
-              {/* <BiCloudRain style={{ fontSize: "44px" }} /> */}
+
               <img
                 id="TooltipExample"
                 src={
@@ -219,8 +202,6 @@ function Home() {
       );
     }
   };
-  // let valTodo = todo.todo;
-  // console.log(valTodo.length);
 
   const focus = () => {
     return (
@@ -239,16 +220,6 @@ function Home() {
             />
           </div>
         </form>
-
-        {/* <div className="text-center mt-3">
-          {todo.todo == " " ? (
-            <button onClick={handleSubTodo} className="btn">
-              Continue
-            </button>
-          ) : (
-            []
-          )}
-        </div> */}
       </>
     );
   };
@@ -276,15 +247,15 @@ function Home() {
             <span className="title">Hello, what's your name?</span>
           </div>
           <form onSubmit={(e) => handaleSubmit(e)}>
-          <div className="text-center">
-            <input
-              type="text"
-              onChange={handleShow}
-              className="in"
-              name="name"
-              required
-            />
-          </div>
+            <div className="text-center">
+              <input
+                type="text"
+                onChange={handleShow}
+                className="in"
+                name="name"
+                required
+              />
+            </div>
           </form>
           <div className="text-center mt-3">
             {show === false ? (
@@ -308,7 +279,7 @@ function Home() {
           <div className="text-center">
             <span className="title">What's your email,{userDetails.name}?</span>
           </div>
-        
+
           <div className="text-center">
             <input
               type="email"
@@ -318,7 +289,7 @@ function Home() {
               required
             />
           </div>
-       
+
           <div className="text-center mt-3">
             {show === false ? (
               []
@@ -348,15 +319,15 @@ function Home() {
             <span className="title">Please Choose a password.</span>
           </div>
           <form onSubmit={subPass}>
-          <div className="text-center">
-            <input
-              type="password"
-              onChange={handlePassword}
-              name="password"
-              className="in"
-              required
-            />
-          </div>
+            <div className="text-center">
+              <input
+                type="password"
+                onChange={handlePassword}
+                name="password"
+                className="in"
+                required
+              />
+            </div>
           </form>
           <div className="text-center mt-3">
             {show === false ? (
@@ -375,13 +346,6 @@ function Home() {
       if (login === "signIn") {
         return (
           <div class="home">
-            {/* <div
-              class="text-right"
-              style={{ marginLeft: "auto", marginBottom: "0" }}
-            >
-              {weatherToggle === true ? Whetherfu() : []}
-            </div> */}
-
             <div class="clock">
               <span class="time"> {timeToggle === true ? dateTime : []}</span>
             </div>
@@ -389,7 +353,11 @@ function Home() {
             <div className="text-center">
               <span className="title">
                 Good{" "}
-                { checkTime < 12 ? "Morning" : checkTime < 15 ? "Afternoon" : "Evening"}
+                {checkTime < 12
+                  ? "Morning"
+                  : checkTime < 15
+                  ? "Afternoon"
+                  : "Evening"}
                 ,{userDetails.name}
               </span>
             </div>
@@ -504,18 +472,9 @@ function Home() {
                     </div>
                   </div>
                 </div>
-                {/* <div>Name:{data.user.displayName}</div> */}
+
                 <div>Name:{userDetails.name}</div>
                 <div>Email:{data.user.email}</div>
-
-                {/* <div
-                  onClick={handeShowTodo}
-                  className="text-center border"
-                  style={{ margin: "10px", cursor: "pointer" }}
-                >
-                  Todo
-                </div> */}
-                {/* <div>{fetch()}</div> */}
 
                 <div className="container">
                   <div
@@ -527,19 +486,6 @@ function Home() {
                 </div>
               </PopoverBody>
             </Popover>
-            {/* <div style={{ marginRight: "auto", marginBottom: "0" }}>
-              <FiSettings
-                id="Popover1"
-                style={{
-                  fontSize: "25px",
-                  color: "#fff",
-                  cursor: "pointer",
-                }}
-              />
-            </div>
-            <div className="text-center" style={{ color: "#fff" }}>
-              "When you're curious,you find lots of interesting thing to do."
-            </div> */}
           </div>
         );
       }
@@ -552,10 +498,7 @@ function Home() {
         {input === "dashboard" ? (
           <div>
             {login === "signIn" ? (
-              <div
-                class="weather"
-                // style={{ marginLeft: "auto", marginBottom: "0" }}
-              >
+              <div class="weather">
                 {weatherToggle === true ? Whetherfu() : []}
               </div>
             ) : (
